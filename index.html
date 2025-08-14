@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harness the Energy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Harness the Energy!</h1>
+        <p>Press the **Spacebar** when the pointer is inside the green zone.</p>
+
+        <button id="toggle-settings-btn">Adjust Difficulty</button>
+
+        <div id="settings-bar" class="hidden">
+            <div class="setting">
+                <label for="speed-slider">Speed:</label>
+                <input type="range" id="speed-slider" min="1" max="10" value="2">
+                <span id="speed-value">2</span>
+            </div>
+            <div class="setting">
+                <label for="sweet-spot-slider">Sweet Spot Size:</label>
+                <input type="range" id="sweet-spot-slider" min="5" max="50" value="10">
+                <span id="sweet-spot-value">10%</span>
+            </div>
+        </div>
+
+        <div id="slider-container">
+            <div id="slider-track">
+                <div id="slider-sweet-spot"></div>
+                <div id="slider-pointer"></div>
+            </div>
+        </div>
+        <h2 id="result-message"></h2>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
