@@ -7,14 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsBar = document.getElementById('settings-bar');
     const speedSlider = document.getElementById('speed-slider');
     const sweetSpotSlider = document.getElementById('sweet-spot-slider');
-    const sweetSpotLocationSlider = document.getElementById('sweet-spot-location-slider');
     const speedValueDisplay = document.getElementById('speed-value');
     const sweetSpotValueDisplay = document.getElementById('sweet-spot-value');
-    const sweetSpotLocationValueDisplay = document.getElementById('sweet-spot-location-value');
     const trackWidth = document.getElementById('slider-track').offsetWidth;
 
     let sweetSpotSize = 10;
-    let sweetSpotLocation = 45;
     let speed = 2;
     let pointerPosition = 0;
     let direction = 1;
@@ -25,8 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
         isGameOver = false;
         pointerPosition = 0;
         direction = 1;
-
+        
+        // Update sweet spot size from the slider
         sweetSpot.style.width = `${sweetSpotSize}%`;
+        
+        // Randomize the sweet spot position
+        const sweetSpotLocation = Math.random() * (100 - sweetSpotSize);
         sweetSpot.style.left = `${sweetSpotLocation}%`;
 
         resultMessage.textContent = '';
@@ -66,24 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sweetSpotSlider.addEventListener('input', (event) => {
         sweetSpotSize = parseInt(event.target.value);
         sweetSpotValueDisplay.textContent = `${sweetSpotSize}%`;
-        
-        // Adjust max value of sweet spot location to prevent overflow
-        sweetSpotLocationSlider.max = 100 - sweetSpotSize;
-        if (sweetSpotLocation > 100 - sweetSpotSize) {
-            sweetSpotLocation = 100 - sweetSpotSize;
-            sweetSpotLocationSlider.value = sweetSpotLocation;
-            sweetSpotLocationValueDisplay.textContent = `${sweetSpotLocation}%`;
-        }
-
-        if (!isGameOver) {
-            initializeGame();
-        }
-    });
-
-    // Update sweet spot location from slider
-    sweetSpotLocationSlider.addEventListener('input', (event) => {
-        sweetSpotLocation = parseInt(event.target.value);
-        sweetSpotLocationValueDisplay.textContent = `${sweetSpotLocation}%`;
         if (!isGameOver) {
             initializeGame();
         }
