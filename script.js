@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sweetSpot = document.getElementById('slider-sweet-spot');
     const resultMessage = document.getElementById('result-message');
     const toggleBtn = document.getElementById('toggle-settings-btn');
+    const startBtn = document.getElementById('start-btn');
     const restartBtn = document.getElementById('restart-btn');
     const settingsBar = document.getElementById('settings-bar');
     const speedSlider = document.getElementById('speed-slider');
@@ -16,27 +17,49 @@ document.addEventListener('DOMContentLoaded', () => {
     let pointerPosition = 0;
     let direction = 1;
     let gameInterval;
-    let isGameOver = false;
+    let isGameRunning = false;
 
-    function initializeGame() {
-        isGameOver = false;
-        pointerPosition = 0;
-        direction = 1;
-        
-        // Update sweet spot size from the slider value
+    function initializeUI() {
+        // Set initial sweet spot size and center it
         sweetSpot.style.width = `${sweetSpotSize}%`;
-        
-        // Center the sweet spot
         const sweetSpotCenter = (100 - sweetSpotSize) / 2;
         sweetSpot.style.left = `${sweetSpotCenter}%`;
 
-        resultMessage.textContent = '';
+        // Reset pointer and messages
         pointer.style.left = '0px';
+        resultMessage.textContent = '';
+
+        // Show/hide buttons
+        startBtn.classList.remove('hidden');
         restartBtn.classList.add('hidden');
+    }
+
+    function startGame() {
+        isGameRunning = true;
+        pointerPosition = 0;
+        direction = 1;
+        startBtn.classList.add('hidden');
 
         clearInterval(gameInterval);
         gameInterval = setInterval(movePointer, 10);
     }
+    
+    function startCountdown() {
+        let count = 3;
+        resultMessage.textContent = `Starting in ${count}...`;
+        startBtn.classList.add('hidden');
+        
+        const countdownInterval = setInterval(() => {
+            count--;
+            if (count > 0) {
+                resultMessage.textContent = `Starting in ${count}...`;
+            } else {
+                clearInterval(countdownInterval);
+                startGame();
+            }
+        }, 1000);
+    }
+
 
     function movePointer() {
         const sweetSpotStart = sweetSpot.offsetLeft;
@@ -58,24 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
     speedSlider.addEventListener('input', (event) => {
         speed = parseFloat(event.target.value);
         speedValueDisplay.textContent = speed;
-        if (!isGameOver) {
-            initializeGame();
-        }
     });
 
-    // Update sweet spot size from slider (handling decimal values)
+    // Update sweet spot size from slider (and recenter)
     sweetSpotSlider.addEventListener('input', (event) => {
         sweetSpotSize = parseFloat(event.target.value);
         sweetSpotValueDisplay.textContent = `${sweetSpotSize}%`;
-        if (!isGameOver) {
-            initializeGame();
-        }
+        const sweetSpotCenter = (100 - sweetSpotSize) / 2;
+        sweetSpot.style.left = `${sweetSpotCenter}%`;
     });
 
     // Handle spacebar press for the QTE
     document.addEventListener('keydown', (event) => {
-        if (event.code === 'Space' && !isGameOver) {
-            isGameOver = true;
+        if (event.code === 'Space' && isGameRunning) {
+            isGameRunning = false;
             const sweetSpotStart = sweetSpot.offsetLeft;
             const sweetSpotEnd = sweetSpot.offsetLeft + sweetSpot.offsetWidth;
             
@@ -92,11 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle restart button click
-    restartBtn.addEventListener('click', () => {
-        initializeGame();
+    // Handle start button click
+    startBtn.addEventListener('click', () => {
+        startCountdown();
     });
 
-    // Initial game setup
-    initializeGame();
+    // Handle restart button click
+    restartBtn.addEventListener('click', () => {
+        initializeUI();
+    });
+
+    // Initial UI setup on page load
+    initializeUI();
 });
