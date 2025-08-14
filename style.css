@@ -20,7 +20,7 @@ h1 {
     font-size: 2.5em;
 }
 
-#toggle-settings-btn, #restart-btn {
+#toggle-settings-btn, #restart-btn, #start-btn {
     background-color: #30363d;
     color: #c9d1d9;
     border: 1px solid #444c56;
@@ -31,7 +31,7 @@ h1 {
     transition: background-color 0.3s;
 }
 
-#toggle-settings-btn:hover, #restart-btn:hover {
+#toggle-settings-btn:hover, #restart-btn:hover, #start-btn:hover {
     background-color: #444c56;
 }
 
@@ -102,6 +102,6 @@ input[type="range"] {
     font-weight: bold;
 }
 
-#restart-btn.hidden {
+#restart-btn.hidden, #start-btn.hidden {
     display: none;
 }
