@@ -3,30 +3,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const sweetSpot = document.getElementById('slider-sweet-spot');
     const resultMessage = document.getElementById('result-message');
     const toggleBtn = document.getElementById('toggle-settings-btn');
+    const restartBtn = document.getElementById('restart-btn');
     const settingsBar = document.getElementById('settings-bar');
     const speedSlider = document.getElementById('speed-slider');
     const sweetSpotSlider = document.getElementById('sweet-spot-slider');
+    const sweetSpotLocationSlider = document.getElementById('sweet-spot-location-slider');
     const speedValueDisplay = document.getElementById('speed-value');
     const sweetSpotValueDisplay = document.getElementById('sweet-spot-value');
+    const sweetSpotLocationValueDisplay = document.getElementById('sweet-spot-location-value');
     const trackWidth = document.getElementById('slider-track').offsetWidth;
 
-    let sweetSpotSize = 10; // Initial sweet spot size in percentage
-    let speed = 2; // Initial speed
+    let sweetSpotSize = 10;
+    let sweetSpotLocation = 45;
+    let speed = 2;
     let pointerPosition = 0;
     let direction = 1;
     let gameInterval;
+    let isGameOver = false;
 
     function initializeGame() {
+        isGameOver = false;
         pointerPosition = 0;
         direction = 1;
+
         sweetSpot.style.width = `${sweetSpotSize}%`;
-        
-        // Randomize the sweet spot position
-        const sweetSpotPosition = Math.random() * (100 - sweetSpotSize);
-        sweetSpot.style.left = `${sweetSpotPosition}%`;
+        sweetSpot.style.left = `${sweetSpotLocation}%`;
 
         resultMessage.textContent = '';
         pointer.style.left = '0px';
+        restartBtn.classList.add('hidden');
 
         clearInterval(gameInterval);
         gameInterval = setInterval(movePointer, 10);
@@ -52,23 +57,47 @@ document.addEventListener('DOMContentLoaded', () => {
     speedSlider.addEventListener('input', (event) => {
         speed = parseInt(event.target.value);
         speedValueDisplay.textContent = speed;
-        initializeGame(); // Reset game with new speed
+        if (!isGameOver) {
+            initializeGame();
+        }
     });
 
     // Update sweet spot size from slider
     sweetSpotSlider.addEventListener('input', (event) => {
         sweetSpotSize = parseInt(event.target.value);
         sweetSpotValueDisplay.textContent = `${sweetSpotSize}%`;
-        initializeGame(); // Reset game with new size
+        
+        // Adjust max value of sweet spot location to prevent overflow
+        sweetSpotLocationSlider.max = 100 - sweetSpotSize;
+        if (sweetSpotLocation > 100 - sweetSpotSize) {
+            sweetSpotLocation = 100 - sweetSpotSize;
+            sweetSpotLocationSlider.value = sweetSpotLocation;
+            sweetSpotLocationValueDisplay.textContent = `${sweetSpotLocation}%`;
+        }
+
+        if (!isGameOver) {
+            initializeGame();
+        }
+    });
+
+    // Update sweet spot location from slider
+    sweetSpotLocationSlider.addEventListener('input', (event) => {
+        sweetSpotLocation = parseInt(event.target.value);
+        sweetSpotLocationValueDisplay.textContent = `${sweetSpotLocation}%`;
+        if (!isGameOver) {
+            initializeGame();
+        }
     });
 
     // Handle spacebar press for the QTE
     document.addEventListener('keydown', (event) => {
-        if (event.code === 'Space') {
+        if (event.code === 'Space' && !isGameOver) {
+            isGameOver = true;
             const sweetSpotStart = sweetSpot.offsetLeft;
             const sweetSpotEnd = sweetSpot.offsetLeft + sweetSpot.offsetWidth;
             
             clearInterval(gameInterval);
+            restartBtn.classList.remove('hidden');
 
             if (pointerPosition >= sweetSpotStart && pointerPosition <= sweetSpotEnd) {
                 resultMessage.textContent = 'Success! The energy is harnessed!';
@@ -78,6 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultMessage.style.color = '#ff7b72';
             }
         }
+    });
+
+    // Handle restart button click
+    restartBtn.addEventListener('click', () => {
+        initializeGame();
     });
 
     // Initial game setup
