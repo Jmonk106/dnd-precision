@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         pointerPosition = 0;
         direction = 1;
         
-        // Update sweet spot size from the slider
+        // Update sweet spot size from the slider value
         sweetSpot.style.width = `${sweetSpotSize}%`;
         
-        // Randomize the sweet spot position
-        const sweetSpotLocation = Math.random() * (100 - sweetSpotSize);
-        sweetSpot.style.left = `${sweetSpotLocation}%`;
+        // Center the sweet spot
+        const sweetSpotCenter = (100 - sweetSpotSize) / 2;
+        sweetSpot.style.left = `${sweetSpotCenter}%`;
 
         resultMessage.textContent = '';
         pointer.style.left = '0px';
@@ -54,18 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsBar.classList.toggle('hidden');
     });
 
-    // Update speed from slider
+    // Update speed from slider (handling decimal values)
     speedSlider.addEventListener('input', (event) => {
-        speed = parseInt(event.target.value);
+        speed = parseFloat(event.target.value);
         speedValueDisplay.textContent = speed;
         if (!isGameOver) {
             initializeGame();
         }
     });
 
-    // Update sweet spot size from slider
+    // Update sweet spot size from slider (handling decimal values)
     sweetSpotSlider.addEventListener('input', (event) => {
-        sweetSpotSize = parseInt(event.target.value);
+        sweetSpotSize = parseFloat(event.target.value);
         sweetSpotValueDisplay.textContent = `${sweetSpotSize}%`;
         if (!isGameOver) {
             initializeGame();
